@@ -66,12 +66,12 @@ def validate_token():
         abort(400)
 
     try:
-        app_name = json.loads(jwt.decode(authorization, key=JWT_PKEY))["name"]
+        app_name = jwt.decode(authorization, options={"verify_signature": False}, key=JWT_PKEY)["name"]
     except KeyError:
         abort(400)
 
     if sessions.retrieve_app(app_name):
-        user_json = json.loads(jwt.decode(token, key=JWT_PKEY))
+        user_json = jwt.decode(token, options={"verify_signature": False}, key=JWT_PKEY)
         try:
             return json.dumps({"email": user_json["email"]})
         except KeyError:
